@@ -8,6 +8,8 @@
   	<servlet-name>home</servlet-name>
   	<url-pattern>/index.do</url-pattern>  <!-- 가상의 주소  /index.do가 경로창에 들어있으면 HomeController가 실행-->
   </servlet-mapping>
+  
+  
   <servlet>
     <servlet-name>notice</servlet-name>
     <servlet-class>com.sh.control.NoticeController</servlet-class>

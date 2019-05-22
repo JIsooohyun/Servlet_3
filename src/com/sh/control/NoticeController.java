@@ -41,14 +41,17 @@ public class NoticeController extends HttpServlet {
 		if(command.equals("/noticeList")) {
 			actionForward=noticeService.list(request, response);
 		}else if(command.equals("/noticeSelect")) {
+			//System.out.println("dd");왔는지 안왔는지 확인
 			actionForward =noticeService.select(request, response);
 		}else if(command.equals("/noticeWrite")) {
 			actionForward = noticeService.insert(request, response);
 		}else if(command.equals("/noticeUpdate")) {
 			actionForward = noticeService.update(request, response);
 		}else if(command.equals("./noticeDelete")) {
+			
 			actionForward = noticeService.delete(request, response);
 		}else {
+			
 			actionForward = new ActionForward();
 		}
 		

@@ -5,17 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+import com.sh.page.SearchRow;
 import com.sh.util.DBConnector;
 
 public class NoticeDAO {
 	
-	public int getTotalCount(String kind, String search)throws Exception{
+	public int getTotalCount(SearchRow searchRow)throws Exception{
 		int result=0;
 		Connection conn = DBConnector.getConnect();
-		String sql = "select count(num) from notice where "+kind+" like ?";
+		String sql = "select count(num) from notice where "+searchRow.getSearch().getKind()+" like ?";
 		PreparedStatement st = conn.prepareStatement(sql);
 		
-		st.setString(1, "%"+search+"%");
+		st.setString(1, "%"+searchRow.getSearch().getSearch()+"%");
 		ResultSet rs = st.executeQuery();
 		
 		rs.next();
@@ -60,7 +61,7 @@ public class NoticeDAO {
 
 	public NoticeDTO selectOne(int num) throws Exception{
 		Connection conn= DBConnector.getConnect();
-		NoticeDTO noticeDTO = new NoticeDTO();
+		NoticeDTO noticeDTO = null;
 		String sql = "select * from notice where num=?";
 		
 		PreparedStatement st =conn.prepareStatement(sql);
@@ -69,6 +70,7 @@ public class NoticeDAO {
 		
 		ResultSet rs = st.executeQuery();
 		if(rs.next()) {
+			noticeDTO = new NoticeDTO();
 			noticeDTO.setNum(rs.getInt("num"));
 			noticeDTO.setTitle(rs.getString("title"));
 			noticeDTO.setContents(rs.getString("contents"));
@@ -93,19 +95,19 @@ public class NoticeDAO {
 		DBConnector.disConnect(conn, st);
 		return result;
 	}
-	public ArrayList<NoticeDTO> selectList(String kind, String search, int startRow, int lastRow) throws Exception{
+	public ArrayList<NoticeDTO> selectList(SearchRow searchRow) throws Exception{
 		Connection conn = DBConnector.getConnect();
 		ArrayList<NoticeDTO> ar = new ArrayList<NoticeDTO>();
 		NoticeDTO noticeDTO = null;
 		String sql = "select * from "
 					+"(select rownum R, p.* from "
-					+"(select * from notice where "+kind+" like ? order by num desc) p) "
+					+"(select * from notice where "+searchRow.getSearch().getKind()+" like ? order by num desc) p) "
 					+"where R between ? and ?";
 		
 		PreparedStatement st = conn.prepareStatement(sql);
-		st.setString(1, "%"+search+"%");
-		st.setInt(2, startRow);
-		st.setInt(3, lastRow);
+		st.setString(1, "%"+searchRow.getSearch().getSearch()+"%");
+		st.setInt(2, searchRow.getStartRow());
+		st.setInt(3, searchRow.getLastRow());
 		ResultSet rs = st.executeQuery();
 		
 		while(rs.next()) {
