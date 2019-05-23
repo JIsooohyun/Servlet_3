@@ -95,9 +95,7 @@ public class NoticeDAO {
 		return result;
 	}
 	
-	public int insert(NoticeDTO noticeDTO) throws Exception{
-		Connection conn = DBConnector.getConnect();
-		
+	public int insert(NoticeDTO noticeDTO, Connection conn) throws Exception{
 		String sql = "insert into notice(num, title, contents, writer, reg_date) values(?, ?, ?, ?, sysdate)";
 		PreparedStatement st = conn.prepareStatement(sql);
 		
@@ -107,7 +105,7 @@ public class NoticeDAO {
 		st.setString(4, noticeDTO.getWriter());
 		
 		int result = st.executeUpdate();
-		DBConnector.disConnect(conn, st);
+		st.close();
 		return result;
 	}
 	public ArrayList<NoticeDTO> selectList(SearchRow searchRow) throws Exception{

@@ -1,6 +1,8 @@
 package com.sh.notice;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +17,7 @@ import com.sh.page.SearchPager;
 import com.sh.page.SearchRow;
 import com.sh.upload.UploadDAO;
 import com.sh.upload.UploadDTO;
+import com.sh.util.DBConnector;
 
 public class NoticeService implements Action{
 	
@@ -137,17 +140,36 @@ public class NoticeService implements Action{
 			//String f1 =  multi.getParameter("f1");  //파일명이 넘어온다. 파라미터의 이름 받아오는 부분
 			//System.out.println(f1);
 			int result = 0;
-			
+			Connection conn=null;
 			try {
+				conn = DBConnector.getConnect();
+				//auto commit 해제
+				conn.setAutoCommit(false);
 				int num = noticeDAO.getNum();
 				noticeDTO.setNum(num);
-				result = noticeDAO.insert(noticeDTO);
+				result = noticeDAO.insert(noticeDTO, conn);
 				
 				uploadDTO.setNum(num);
-				result = uploadDAO.insert(uploadDTO);
+				result = uploadDAO.insert(uploadDTO, conn);
+				//Exception이 발생하지 않았다.
+				conn.commit();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+				result=0;
+				try {
+					conn.rollback();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				e.printStackTrace();
+			}finally {
+				try {
+					conn.setAutoCommit(true);
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			if(result>0) {
 				check=false;//redirect로 간다. -> list가지고 와서 뿌려줘야 하는데
