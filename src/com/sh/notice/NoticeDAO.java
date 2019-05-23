@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import com.sh.page.SearchRow;
+import com.sh.upload.UploadDTO;
 import com.sh.util.DBConnector;
 
 public class NoticeDAO {
@@ -62,7 +63,8 @@ public class NoticeDAO {
 	public NoticeDTO selectOne(int num) throws Exception{
 		Connection conn= DBConnector.getConnect();
 		NoticeDTO noticeDTO = null;
-		String sql = "select * from notice where num=?";
+		String sql = "select n.*, u.* from notice n full outer join upload u "
+				+"on n.num = u.num where n.num=?";
 		
 		PreparedStatement st =conn.prepareStatement(sql);
 		
@@ -77,6 +79,15 @@ public class NoticeDAO {
 			noticeDTO.setWriter(rs.getString("writer"));
 			noticeDTO.setReg_date(rs.getString("reg_date"));
 			noticeDTO.setHit(rs.getInt("hit"));
+			
+			UploadDTO uploadDTO = new UploadDTO();
+			uploadDTO.setFileName(rs.getString("fileName"));
+			uploadDTO.setoName(rs.getString("oName"));
+			uploadDTO.setPnum(rs.getInt("pnum"));
+			noticeDTO.setUploadDTO(uploadDTO);
+			//noticeDTO.setUploadDTO(new UploadDTO());
+			//noticeDTO.getUploadDTO().setPnum(rs.getInt("pnum"));
+			
 		}
 		DBConnector.disConnect(conn, st, rs);
 		return noticeDTO;

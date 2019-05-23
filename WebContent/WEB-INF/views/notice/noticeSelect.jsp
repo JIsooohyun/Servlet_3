@@ -30,7 +30,7 @@
 					<td>${requestScope.noticeDTO.writer}</td>
 					<td>${requestScope.noticeDTO.reg_date}</td>
 					<td>${requestScope.noticeDTO.hit}</td>
-					<td>File: <a href="../upload/${upload.fileName}"> ${upload.oName}</a></td>
+					<td>File: <a href="../upload/${noticeDTO.uploadDTO.fileName}"> ${noticeDTO.uploadDTO.oName}</a></td>
 				</tr>
 			</table>
 		<div class="container">

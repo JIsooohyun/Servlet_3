@@ -81,7 +81,6 @@ public class NoticeService implements Action{
 		try {
 			int num = Integer.parseInt(request.getParameter("num"));  //숫자가 안넘오고 문자가 넘어올떄 오류방지하기 위해서
 			noticeDTO = noticeDAO.selectOne(num);
-			uploadDTO = uploadDAO.selectOne(num);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -90,7 +89,6 @@ public class NoticeService implements Action{
 		String path = "";
 		if(noticeDTO!=null) {
 			request.setAttribute("noticeDTO", noticeDTO);
-			request.setAttribute("upload", uploadDTO);
 			path = "../WEB-INF/views/notice/noticeSelect.jsp";
 		}else{
 			request.setAttribute("msg", "No Data");
@@ -151,6 +149,9 @@ public class NoticeService implements Action{
 				
 				uploadDTO.setNum(num);
 				result = uploadDAO.insert(uploadDTO, conn);
+				if(result<1) {
+					throw new Exception();//Exception객체를 만들어서 예외처리에다가 보내준다. 
+				}
 				//Exception이 발생하지 않았다.
 				conn.commit();
 			} catch (Exception e) {
