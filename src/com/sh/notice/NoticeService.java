@@ -13,13 +13,17 @@ import com.sh.action.ActionForward;
 import com.sh.page.SearchMakePage;
 import com.sh.page.SearchPager;
 import com.sh.page.SearchRow;
+import com.sh.upload.UploadDAO;
+import com.sh.upload.UploadDTO;
 
 public class NoticeService implements Action{
 	
 	private NoticeDAO noticeDAO;
+	private UploadDAO uploadDAO;
 	
 	public NoticeService() {
 		noticeDAO = new NoticeDAO();
+		uploadDAO = new UploadDAO();
 	} 
 
 	@Override
@@ -70,9 +74,12 @@ public class NoticeService implements Action{
 		//글이 있으면 출력
 		//글이 없으면 삭제되었거나 없는 글입니다. (alert창으로 띄우기)->noticeList로 돌아가기
 		NoticeDTO noticeDTO =null;
+		UploadDTO uploadDTO = null;
 		try {
 			int num = Integer.parseInt(request.getParameter("num"));  //숫자가 안넘오고 문자가 넘어올떄 오류방지하기 위해서
 			noticeDTO = noticeDAO.selectOne(num);
+			uploadDTO = uploadDAO.selectOne(num);
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -80,6 +87,7 @@ public class NoticeService implements Action{
 		String path = "";
 		if(noticeDTO!=null) {
 			request.setAttribute("noticeDTO", noticeDTO);
+			request.setAttribute("upload", uploadDTO);
 			path = "../WEB-INF/views/notice/noticeSelect.jsp";
 		}else{
 			request.setAttribute("msg", "No Data");
@@ -95,14 +103,14 @@ public class NoticeService implements Action{
 	public ActionForward insert(HttpServletRequest request, HttpServletResponse response) {
 		ActionForward actionForward = new ActionForward();
 		String method = request.getMethod();//get인지 post인지 확인
-		String path="../WEB-INF/views/notice/noticeWite.jsp";
+		String path="../WEB-INF/views/notice/noticeWite.jsp"; //get일 때 가는 방식
 		boolean check=true;
 		
-		if(method.equals("POST")) {//짤려진 request를 하나로 합쳐주는 작업을 한다. -> cos
+		if(method.equals("POST")) {//짤려진 request를 하나로 합쳐주는 작업을 한다. -> cos 라이브러리
 			NoticeDTO noticeDTO = new NoticeDTO();
 			
 			//1. request를 하나로 합치기
-			String saveDirectory = request.getServletContext().getRealPath("/upload");//c부터 upload까지 시작하는 실제 경로
+			String saveDirectory = request.getServletContext().getRealPath("/upload");//c부터 upload까지 시작하는 실제 경로//파일을 저장할 디스크 경로
 			//System.out.println(saveDirectory);
 			int maxPostSize =1024*1024*10;//파일크기 지정 byte
 			String encoding = "UTF-8";
@@ -113,12 +121,16 @@ public class NoticeService implements Action{
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}//이 객체가 만들어지는 동시에 파일이 저장이 된다. saveDirectory에
+			}//이 객체가 만들어지는 동시에 파일이 saveDirectory에 저장이 된다. 
 			//request는 받아오는 부분
 			String fileName = multi.getFilesystemName("f1");//"파라미터이름"//하드디스크(서버)에 저장된 이름
-			System.out.println("filename : "+fileName);
+			//System.out.println("filename : "+fileName);
 			String oName = multi.getOriginalFileName("f1");//"파라미터이름"//클라이언트가 업로드 할 때 파일 이름
-			System.out.println("oName : "+oName);
+			//System.out.println("oName : "+oName);
+			UploadDTO uploadDTO = new UploadDTO();
+			uploadDTO.setFileName(fileName);
+			uploadDTO.setoName(oName);
+			
 			noticeDTO.setTitle(multi.getParameter("title"));
 			noticeDTO.setWriter(multi.getParameter("writer"));
 			noticeDTO.setContents(multi.getParameter("contents"));
@@ -127,7 +139,12 @@ public class NoticeService implements Action{
 			int result = 0;
 			
 			try {
+				int num = noticeDAO.getNum();
+				noticeDTO.setNum(num);
 				result = noticeDAO.insert(noticeDTO);
+				
+				uploadDTO.setNum(num);
+				result = uploadDAO.insert(uploadDTO);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

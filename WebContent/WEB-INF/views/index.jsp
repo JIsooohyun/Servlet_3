@@ -9,7 +9,9 @@
 </head>
 <body>
 <jsp:include page="./temp/header.jsp"/>
+<div class="container">
 	<h1>Index Page</h1>
 	<img alt="icon1" src="./images/d3.png">
+</div>
 </body>
 </html>

@@ -21,6 +21,7 @@
 					<td>WRITER</td>
 					<td>DATE</td>
 					<td>HIT</td>
+					<td>FILE</td>
 				</tr>
 				<tr>
 					<td>${noticeDTO.num}</td>
@@ -29,6 +30,7 @@
 					<td>${requestScope.noticeDTO.writer}</td>
 					<td>${requestScope.noticeDTO.reg_date}</td>
 					<td>${requestScope.noticeDTO.hit}</td>
+					<td>File: <a href="../upload/${upload.fileName}"> ${upload.oName}</a></td>
 				</tr>
 			</table>
 		<div class="container">

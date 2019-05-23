@@ -13,6 +13,7 @@
 	<div class="container">
 		<h1>Notice Write</h1>
 		<form action="./noticeWrite" method="post" enctype="multipart/form-data"><!-- enctype이 multipart로 들어가면 requset가 여러개로 조각나서 들어간다.  -->
+		<!-- 파일 업로드하려면 메서드 방식은 post이다 무조건!! -->
 			<div class="form-group">
 				<label for="title">Title:</label> 
 				<input type="text" class="form-control" id="title" name="title">
