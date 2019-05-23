@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -17,12 +18,26 @@
       <li><a href="#">Page 2</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+    <%-- <c:if test=""></c:if><!-- 꺼낸 애가 null이면 회원가입 보여주기 -->
+    <c:choose><!-- switch case와 비슷한 걔념 -->
+    	<c:when test=""><!-- if -->
+    	</c:when>
+    	<c:when test="">
+    	</c:when>
+    	<c:otherwise><!-- 나머지 전부 다 -->
+    	</c:otherwise>
+    </c:choose> --%>
+    <c:if test="${sessionScope.memberDTO ne null}">
+      <li><a href="<%=application.getContextPath()%>/member/memberCheck">My Page</a></li>
+      <li><a href="<%=application.getContextPath()%>/member/memberLogin">Logout</a></li>
+    </c:if>
+    <c:if test="${sessionScope.memberDTO eq null}">
+      <li><a href="<%=application.getContextPath()%>/member/memberCheck">Sign Up</a></li>
+      <li><a href="<%=application.getContextPath()%>/member/memberLogin"> Login</a></li>
+    </c:if>
     </ul>
   </div>
 </nav>
-
 <div class="container">
   <div class="jumbotron">
     <h1>Bootstrap Tutorial</h1>      

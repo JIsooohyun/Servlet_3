@@ -18,4 +18,13 @@
     <servlet-name>notice</servlet-name>
     <url-pattern>/notice/*</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>member</servlet-name>
+  	<servlet-class>com.sh.control.MemberController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>member</servlet-name>
+  	<url-pattern>/member/*</url-pattern>
+  </servlet-mapping>
 </web-app>

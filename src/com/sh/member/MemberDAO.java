@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import com.sh.util.DBConnector;
 
 public class MemberDAO {
+	
 	public int idCheck(String id)throws Exception{
 		int result = 0; //0이면 사용가능한 ID
 		Connection conn = DBConnector.getConnect();
@@ -76,9 +77,8 @@ public class MemberDAO {
 	
 	
 	//join메서드
-	public int memberJoin(MemberDTO memberDTO) throws Exception{
+	public int memberJoin(MemberDTO memberDTO, Connection conn) throws Exception{
 		int result=0;
-		Connection conn = DBConnector.getConnect();
 		String sql = "insert into member values(?, ?, ?, ?, ?, ?)";
 		PreparedStatement st = conn.prepareStatement(sql);
 		
@@ -91,7 +91,7 @@ public class MemberDAO {
 		
 		result = st.executeUpdate();
 		
-		DBConnector.disConnect(conn, st);
+		st.close();
 		
 		return result;
 	}
