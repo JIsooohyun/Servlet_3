@@ -81,18 +81,31 @@ public class NoticeDAO {
 		DBConnector.disConnect(conn, st, rs);
 		return noticeDTO;
 	}
-	public int insert(NoticeDTO noticeDTO) throws Exception{
+	
+	//sequence
+	public int getNum()throws Exception{
+		int result=0;
 		Connection conn = DBConnector.getConnect();
-		
-		String sql = "insert into notice(num, title, contents, writer, reg_date) values(notice_seq.nextval, ?, ?, ?, sysdate)";
+		String sql = "select notice_seq.nextval from dual";//시퀀스 번호 가져오기 dual은 가상의 테이블명
+		PreparedStatement st = conn.prepareStatement(sql);
+		ResultSet rs = st.executeQuery();
+		rs.next();
+		result = rs.getInt(1);
+		DBConnector.disConnect(conn, st, rs);
+		return result;
+	}
+	
+	public int insert(NoticeDTO noticeDTO, Connection conn) throws Exception{
+		String sql = "insert into notice(num, title, contents, writer, reg_date) values(?, ?, ?, ?, sysdate)";
 		PreparedStatement st = conn.prepareStatement(sql);
 		
-		st.setString(1, noticeDTO.getTitle());
-		st.setString(2, noticeDTO.getContents());
-		st.setString(3, noticeDTO.getWriter());
+		st.setInt(1, noticeDTO.getNum());
+		st.setString(2, noticeDTO.getTitle());
+		st.setString(3, noticeDTO.getContents());
+		st.setString(4, noticeDTO.getWriter());
 		
 		int result = st.executeUpdate();
-		DBConnector.disConnect(conn, st);
+		st.close();
 		return result;
 	}
 	public ArrayList<NoticeDTO> selectList(SearchRow searchRow) throws Exception{

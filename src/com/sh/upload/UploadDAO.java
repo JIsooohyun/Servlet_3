@@ -29,16 +29,15 @@ public class UploadDAO {
 	}
 	
 	//insert
-	public int insert(UploadDTO uploadDTO) throws Exception{
+	public int insert(UploadDTO uploadDTO, Connection conn) throws Exception{
 		int result =0;
-		Connection conn = DBConnector.getConnect();
 		String sql = "insert into upload values (point_seq.nextval, ?, ?, ?)";
 		PreparedStatement st = conn.prepareStatement(sql);
 		st.setInt(1, uploadDTO.getNum());
 		st.setString(2, uploadDTO.getoName());
 		st.setString(3, uploadDTO.getFileName());
 		result = st.executeUpdate();
-		DBConnector.disConnect(conn, st);
+		st.close();
 		return result;
 	}
 }
