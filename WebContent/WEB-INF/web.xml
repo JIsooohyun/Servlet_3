@@ -9,6 +9,14 @@
   	<url-pattern>/index.do</url-pattern>  <!-- 가상의 주소  /index.do가 경로창에 들어있으면 HomeController가 실행-->
   </servlet-mapping>
   
+  <servlet>
+  	<servlet-name>qna</servlet-name>
+  	<servlet-class>com.sh.control.QnaController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>qna</servlet-name>
+  	<url-pattern>/qna/*</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <servlet-name>notice</servlet-name>
