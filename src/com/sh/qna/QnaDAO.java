@@ -51,7 +51,8 @@ public class QnaDAO {
 		
 		result = rs.getInt("count(num)");
 		
-		DBConnector.disConnect(conn, st, rs);
+		rs.close();
+		st.close();
 		
 		return result;
 	}
@@ -84,7 +85,8 @@ public class QnaDAO {
 			qnaDTO.setDepth(rs.getInt("depth"));
 			ar.add(qnaDTO);
 		}
-		DBConnector.disConnect(conn, st, rs);
+		rs.close();
+		st.close();
 		return ar;
 	}
 
